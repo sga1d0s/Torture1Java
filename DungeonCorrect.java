@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class Dungeon {
+public class DungeonCorrect {
 
   public static void main(String[] args) {
     // CREACIÓN DE PERSONAJE
@@ -14,10 +14,9 @@ public class Dungeon {
       System.out.println("Insert character name:");
       name = sc.next();
 
-      if (!name.equals("") && !name.equals(" ")) {
+      if (!name.trim().isEmpty()) {
         String firstLetter = name.substring(0, 1).toUpperCase();
-        String remaining = name.substring(1, name.length()).toLowerCase();
-
+        String remaining = name.substring(1).toLowerCase();
         name = firstLetter.concat(remaining);
         break;
       } else {
@@ -53,7 +52,6 @@ public class Dungeon {
     System.out.println("----------");
 
     // INIT GAME DATA
-    // --------------------------------
     int[][] map = {
         { 0, 0, 0, 3, 0, 0 },
         { 0, 0, 0, 0, 0, 0 },
@@ -64,9 +62,9 @@ public class Dungeon {
 
     String[] messages = {
         "A long and dark corridor lies in front of you",
-        "You arrived at the Wistom Altar. A light of hope shines from upward",
-        "You arrived at the Red Fountain, Ther pouring bood poisons you",
-        "You arrived at fountain. When you drink water, it removes poison and flames",
+        "You arrived at the Wisdom Altar. A light of hope shines from upward",
+        "You arrived at the Red Fountain. The pouring blood poisons you",
+        "You arrived at a fountain. When you drink water, it removes poison and flames",
         "A dragon gazes at you. Suddenly, he throws flames at you",
     };
 
@@ -92,9 +90,8 @@ public class Dungeon {
       final int DRAGON = 4;
 
       // 1.- LOAD ROOM DATA
-      // Mostrar descripcion de la sala
-      int fila = position / 10;
-      int columna = position & 10;
+      int fila = position / 6;
+      int columna = position % 6;
 
       System.out.println("Position: (" + (fila + 1) + "," + (columna + 1) + ")");
 
@@ -105,28 +102,23 @@ public class Dungeon {
 
       // 2.- ROOM EFFECTS / EVENTS
       switch (mapValue) {
-        // Sala del altar
         case ALTAR:
           gameState = SUCCEEDED;
           break;
 
-        // Sala Blood fountain
         case BLOOD_FOUNTAIN:
           isPoisoned = true;
           break;
 
-        // Sala life fountan
         case LIFE_FOUNTAIN:
           isPoisoned = false;
           isBurning = false;
           break;
 
-        // Sala dragon
         case DRAGON:
           isBurning = true;
           break;
 
-        // Corridor
         default:
           break;
       }
@@ -135,19 +127,16 @@ public class Dungeon {
         break;
 
       // 3.- ACCIONES
-      // Mostrar acciones disponibles
       System.out.println("What do you want to do? (Actions: n,s,e,w,m,p,q)");
 
-      // Órdenes
       action = sc.next();
 
       switch (action) {
         case "n":
-          // Si estoy en la fila 0, no me puedo mover
           if (fila == 0) {
             System.out.println("You cannot go this way");
           } else {
-            position -= 10;
+            position -= 6;
             food--;
             if (isPoisoned) {
               life -= 3;
@@ -162,7 +151,7 @@ public class Dungeon {
           if (fila == 4) {
             System.out.println("You cannot go this way");
           } else {
-            position -= 10;
+            position += 6;
             food--;
             if (isPoisoned) {
               life -= 3;
@@ -204,7 +193,7 @@ public class Dungeon {
           break;
 
         case "p":
-          System.out.println("ATRIBUTES");
+          System.out.println("ATTRIBUTES");
           System.out.println("---------");
 
           System.out.println("Name: " + name);
@@ -219,16 +208,16 @@ public class Dungeon {
 
           for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
-              int playerColumna = position % 10; // Columna
-              int playerFila = position / 10; // Fila
+              int playerColumna = position % 6;
+              int playerFila = position / 6;
 
               if (playerColumna == j && playerFila == i) {
-                System.out.println("*");
+                System.out.print("* ");
               } else {
-                System.out.println(map[i][j]);
+                System.out.print(map[i][j] + " ");
               }
             }
-            System.out.println("");
+            System.out.println();
           }
           System.out.println("-----------------");
           break;
@@ -242,14 +231,13 @@ public class Dungeon {
           break;
       }
 
-      // Comprobamos si el juego ha terminado de alguna de las formas
       if (food <= 0) {
         gameState = NO_FOOD;
       } else if (life <= 0) {
         gameState = NO_LIFE;
       }
 
-    } // End of GAME LOOP (While)
+    }
 
     // FIN DEL JUEGO
     switch (gameState) {
@@ -267,9 +255,7 @@ public class Dungeon {
         break;
 
       default:
-      System.out.println("Error. Game State not valid");
+        System.out.println("Error. Game State not valid");
     }
-
-    sc.close();
   }
 }
